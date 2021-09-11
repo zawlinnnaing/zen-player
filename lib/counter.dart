@@ -1,0 +1,1 @@
+class Counter {  int _value = 0;  set value(int val) {    throw UnimplementedError(        "Unimplemented settor for value use increment or decrement instead.");  }  get value {    return _value;  }  void increment() {    _value += 1;  }  void decrement() {    _value -= 1;  }}
