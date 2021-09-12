@@ -14,6 +14,15 @@ void main() {
   ));
 }
 
+class _AppVm {
+  ThemeMode themeMode;
+  _AppVm({required this.themeMode});
+
+  factory _AppVm.fromStore(Store<AppState> store) {
+    return _AppVm(themeMode: store.state.themeState!.mode);
+  }
+}
+
 class MyApp extends StatelessWidget {
   final Store<AppState> store;
   MyApp({required this.store});
@@ -22,15 +31,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider(
         store: store,
-        child: MaterialApp(
-          title: 'Zen Player',
-          darkTheme:
-              ThemeData.dark().copyWith(accentColor: Colors.lightBlueAccent),
-          theme:
-              ThemeData.light().copyWith(accentColor: Colors.lightBlueAccent),
-          themeMode: store.state.themeState!.mode,
-          routes: Routes.routesMap,
-          debugShowCheckedModeBanner: false,
+        child: StoreConnector(
+          converter: (Store<AppState> store) => _AppVm.fromStore(store),
+          builder: (BuildContext context, _AppVm vm) {
+            return MaterialApp(
+              title: 'Zen Player',
+              darkTheme: ThemeData.dark().copyWith(
+                  colorScheme:
+                      ColorScheme.dark(secondary: Colors.lightBlueAccent)),
+              theme: ThemeData.light(),
+              themeMode: vm.themeMode,
+              routes: Routes.routesMap,
+              debugShowCheckedModeBanner: false,
+            );
+          },
         ));
   }
 }
