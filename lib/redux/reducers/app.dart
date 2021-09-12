@@ -1,0 +1,1 @@
+import 'package:redux/redux.dart';import 'package:zen_player/redux/actions/app.dart';import 'package:zen_player/redux/states/app.dart';final appReducer = combineReducers<AppState>([  TypedReducer(updateViewIndex),]);AppState updateViewIndex(AppState state, UpdateViewIndexAction action) {  state.currentViewIndex = action.index;  return state;}
