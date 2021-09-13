@@ -4,6 +4,7 @@ import 'package:redux/redux.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:zen_player/redux/reducers/app.dart';
 import 'package:zen_player/redux/states/app.dart';
+import 'package:zen_player/utils/config.dart';
 import 'package:zen_player/utils/routes.dart';
 
 void main() {
@@ -36,10 +37,8 @@ class MyApp extends StatelessWidget {
           builder: (BuildContext context, _AppVm vm) {
             return MaterialApp(
               title: 'Zen Player',
-              darkTheme: ThemeData.dark().copyWith(
-                  colorScheme:
-                      ColorScheme.dark(secondary: Colors.lightBlueAccent)),
-              theme: ThemeData.light(),
+              darkTheme: darkTheme,
+              theme: lightTheme,
               themeMode: vm.themeMode,
               routes: Routes.routesMap,
               debugShowCheckedModeBanner: false,
