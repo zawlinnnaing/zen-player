@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:zen_player/redux/middlewares/theme_middleware.dart';
 import 'package:zen_player/redux/reducers/app.dart';
 import 'package:zen_player/redux/states/app.dart';
+import 'package:zen_player/redux/store.dart';
 import 'package:zen_player/utils/config.dart';
 import 'package:zen_player/utils/routes.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,7 +15,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future main() async {
   setPathUrlStrategy();
   await dotenv.load(fileName: '.env');
-  Store<AppState> store = Store(appReducer, initialState: AppState());
+  Store<AppState> store = Store(appReducer,
+      initialState: AppState(), middleware: [ThemeMiddleware()]);
+  populateStore(store);
   runApp(MyApp(
     store: store,
   ));
