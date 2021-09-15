@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:zen_player/redux/middlewares/search_middleware.dart';
 import 'package:zen_player/redux/middlewares/theme_middleware.dart';
 import 'package:zen_player/redux/reducers/app.dart';
 import 'package:zen_player/redux/states/app.dart';
@@ -14,9 +15,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future main() async {
   setPathUrlStrategy();
-  await dotenv.load(fileName: '.env');
+  await dotenv.load().catchError((error) {
+    log("DotEnvError", error: error);
+  });
   Store<AppState> store = Store(appReducer,
-      initialState: AppState(), middleware: [ThemeMiddleware()]);
+      initialState: AppState(),
+      middleware: [ThemeMiddleware(), SearchMiddleware()]);
   populateStore(store);
   runApp(MyApp(
     store: store,
