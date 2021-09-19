@@ -1,0 +1,1 @@
+String hidePauseOverlayJs =    "document.querySelector('.ytp-pause-overlay').style.display='none';";
