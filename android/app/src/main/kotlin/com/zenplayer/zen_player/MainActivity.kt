@@ -1,4 +1,4 @@
-package com.zenplayer.zen_player
+package com.zenplayer
 
 import io.flutter.embedding.android.FlutterActivity
 

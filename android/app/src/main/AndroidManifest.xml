@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zenplayer.zen_player">
+    package="com.zenplayer">
    <application
         android:label="Zen Player"
         android:icon="@mipmap/ic_launcher">
