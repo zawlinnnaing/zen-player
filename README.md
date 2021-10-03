@@ -14,7 +14,7 @@ Available Features:
 ## Development
 
 Prerequisites:
-- Flutter v2.0.4
+- Flutter v2.5.2
 - For developing for desktop, checkout [flutter desktop support](https://flutter.dev/desktop).
 
 Steps:
