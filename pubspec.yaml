@@ -35,7 +35,6 @@ dependencies:
   redux: ^5.0.0
   flutter_switch: ^0.3.2
   flutter_dotenv: ^5.0.2
-  googleapis: ^5.0.1
   dio: ^4.0.0
   html: ^0.15.0
   shared_preferences: ^2.0.7
