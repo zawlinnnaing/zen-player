@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:zen_player/managers/watch_history.dart';
 import 'package:zen_player/redux/middlewares/search_middleware.dart';
 import 'package:zen_player/redux/middlewares/theme_middleware.dart';
 import 'package:zen_player/redux/reducers/app.dart';
@@ -12,6 +13,12 @@ import 'package:zen_player/redux/store.dart';
 import 'package:zen_player/utils/config.dart';
 import 'package:zen_player/utils/routes.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+Future<void> beforeAppInitialized() async {
+  await WatchHistoryManager.fromDefault().create();
+}
+
+Future<void> afterAppInitialized() async {}
 
 Future main() async {
   setPathUrlStrategy();
@@ -22,9 +29,11 @@ Future main() async {
       initialState: AppState(),
       middleware: [ThemeMiddleware(), SearchMiddleware()]);
   populateStore(store);
+  await beforeAppInitialized();
   runApp(MyApp(
     store: store,
   ));
+  afterAppInitialized();
 }
 
 class _AppVm {

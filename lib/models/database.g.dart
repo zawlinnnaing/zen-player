@@ -305,13 +305,11 @@ class VideosCompanion extends UpdateCompanion<VideoData> {
     this.provider = const Value.absent(),
     this.width = const Value.absent(),
     this.height = const Value.absent(),
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   })  : id = Value(id),
         title = Value(title),
-        url = Value(url),
-        createdAt = Value(createdAt),
-        updatedAt = Value(updatedAt);
+        url = Value(url);
   static Insertable<VideoData> custom({
     Expression<String>? id,
     Expression<String>? title,
@@ -498,11 +496,15 @@ class $VideosTable extends Videos with TableInfo<$VideosTable, VideoData> {
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   late final GeneratedColumn<DateTime?> createdAt = GeneratedColumn<DateTime?>(
       'created_at', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
   late final GeneratedColumn<DateTime?> updatedAt = GeneratedColumn<DateTime?>(
       'updated_at', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -588,14 +590,10 @@ class $VideosTable extends Videos with TableInfo<$VideosTable, VideoData> {
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
       context.handle(_updatedAtMeta,
           updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -746,11 +744,9 @@ class PlayListsCompanion extends UpdateCompanion<PlayListData> {
     this.id = const Value.absent(),
     required String name,
     this.isBuiltIn = const Value.absent(),
-    required DateTime createdAt,
-    required DateTime updatedAt,
-  })  : name = Value(name),
-        createdAt = Value(createdAt),
-        updatedAt = Value(updatedAt);
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : name = Value(name);
   static Insertable<PlayListData> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -830,7 +826,9 @@ class $PlayListsTable extends PlayLists
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
       'name', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      typeName: 'TEXT',
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL UNIQUE');
   final VerificationMeta _isBuiltInMeta = const VerificationMeta('isBuiltIn');
   late final GeneratedColumn<bool?> isBuiltIn = GeneratedColumn<bool?>(
       'is_built_in', aliasedName, false,
@@ -841,11 +839,15 @@ class $PlayListsTable extends PlayLists
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   late final GeneratedColumn<DateTime?> createdAt = GeneratedColumn<DateTime?>(
       'created_at', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
   late final GeneratedColumn<DateTime?> updatedAt = GeneratedColumn<DateTime?>(
       'updated_at', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
   @override
   List<GeneratedColumn> get $columns =>
       [id, name, isBuiltIn, createdAt, updatedAt];
@@ -876,14 +878,10 @@ class $PlayListsTable extends PlayLists
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
       context.handle(_updatedAtMeta,
           updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -902,12 +900,228 @@ class $PlayListsTable extends PlayLists
   }
 }
 
+class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
+  final int id;
+  final String videoId;
+  final int playListId;
+  VideoPlayList(
+      {required this.id, required this.videoId, required this.playListId});
+  factory VideoPlayList.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    return VideoPlayList(
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      videoId: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}video_id'])!,
+      playListId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}play_list_id'])!,
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['video_id'] = Variable<String>(videoId);
+    map['play_list_id'] = Variable<int>(playListId);
+    return map;
+  }
+
+  VideosPlayListsCompanion toCompanion(bool nullToAbsent) {
+    return VideosPlayListsCompanion(
+      id: Value(id),
+      videoId: Value(videoId),
+      playListId: Value(playListId),
+    );
+  }
+
+  factory VideoPlayList.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return VideoPlayList(
+      id: serializer.fromJson<int>(json['id']),
+      videoId: serializer.fromJson<String>(json['videoId']),
+      playListId: serializer.fromJson<int>(json['playListId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'videoId': serializer.toJson<String>(videoId),
+      'playListId': serializer.toJson<int>(playListId),
+    };
+  }
+
+  VideoPlayList copyWith({int? id, String? videoId, int? playListId}) =>
+      VideoPlayList(
+        id: id ?? this.id,
+        videoId: videoId ?? this.videoId,
+        playListId: playListId ?? this.playListId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('VideoPlayList(')
+          ..write('id: $id, ')
+          ..write('videoId: $videoId, ')
+          ..write('playListId: $playListId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      $mrjf($mrjc(id.hashCode, $mrjc(videoId.hashCode, playListId.hashCode)));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VideoPlayList &&
+          other.id == this.id &&
+          other.videoId == this.videoId &&
+          other.playListId == this.playListId);
+}
+
+class VideosPlayListsCompanion extends UpdateCompanion<VideoPlayList> {
+  final Value<int> id;
+  final Value<String> videoId;
+  final Value<int> playListId;
+  const VideosPlayListsCompanion({
+    this.id = const Value.absent(),
+    this.videoId = const Value.absent(),
+    this.playListId = const Value.absent(),
+  });
+  VideosPlayListsCompanion.insert({
+    this.id = const Value.absent(),
+    required String videoId,
+    required int playListId,
+  })  : videoId = Value(videoId),
+        playListId = Value(playListId);
+  static Insertable<VideoPlayList> custom({
+    Expression<int>? id,
+    Expression<String>? videoId,
+    Expression<int>? playListId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (videoId != null) 'video_id': videoId,
+      if (playListId != null) 'play_list_id': playListId,
+    });
+  }
+
+  VideosPlayListsCompanion copyWith(
+      {Value<int>? id, Value<String>? videoId, Value<int>? playListId}) {
+    return VideosPlayListsCompanion(
+      id: id ?? this.id,
+      videoId: videoId ?? this.videoId,
+      playListId: playListId ?? this.playListId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (videoId.present) {
+      map['video_id'] = Variable<String>(videoId.value);
+    }
+    if (playListId.present) {
+      map['play_list_id'] = Variable<int>(playListId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VideosPlayListsCompanion(')
+          ..write('id: $id, ')
+          ..write('videoId: $videoId, ')
+          ..write('playListId: $playListId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VideosPlayListsTable extends VideosPlayLists
+    with TableInfo<$VideosPlayListsTable, VideoPlayList> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $VideosPlayListsTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _videoIdMeta = const VerificationMeta('videoId');
+  late final GeneratedColumn<String?> videoId = GeneratedColumn<String?>(
+      'video_id', aliasedName, false,
+      typeName: 'TEXT',
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL REFERENCES videos (id)');
+  final VerificationMeta _playListIdMeta = const VerificationMeta('playListId');
+  late final GeneratedColumn<int?> playListId = GeneratedColumn<int?>(
+      'play_list_id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL REFERENCES playlists (id)');
+  @override
+  List<GeneratedColumn> get $columns => [id, videoId, playListId];
+  @override
+  String get aliasedName => _alias ?? 'videos_play_lists';
+  @override
+  String get actualTableName => 'videos_play_lists';
+  @override
+  VerificationContext validateIntegrity(Insertable<VideoPlayList> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('video_id')) {
+      context.handle(_videoIdMeta,
+          videoId.isAcceptableOrUnknown(data['video_id']!, _videoIdMeta));
+    } else if (isInserting) {
+      context.missing(_videoIdMeta);
+    }
+    if (data.containsKey('play_list_id')) {
+      context.handle(
+          _playListIdMeta,
+          playListId.isAcceptableOrUnknown(
+              data['play_list_id']!, _playListIdMeta));
+    } else if (isInserting) {
+      context.missing(_playListIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VideoPlayList map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return VideoPlayList.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  }
+
+  @override
+  $VideosPlayListsTable createAlias(String alias) {
+    return $VideosPlayListsTable(_db, alias);
+  }
+}
+
 abstract class _$MyDatabase extends GeneratedDatabase {
   _$MyDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   late final $VideosTable videos = $VideosTable(this);
   late final $PlayListsTable playLists = $PlayListsTable(this);
+  late final $VideosPlayListsTable videosPlayLists =
+      $VideosPlayListsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [videos, playLists];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [videos, playLists, videosPlayLists];
 }

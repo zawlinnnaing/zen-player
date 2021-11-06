@@ -1,7 +1,7 @@
 # Zen Player
 
 Zen Player is a distraction-free player for streaming youtube and others. 
-(Currently only supports **youtube**). It is available in **android**, **ios** and **windows**.
+(Currently only supports **youtube**). It is available in **android**, **web**.
 
 Available Features:
 - Disables Recommended section
