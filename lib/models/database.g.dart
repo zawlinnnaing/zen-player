@@ -904,8 +904,12 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
   final int id;
   final String videoId;
   final int playListId;
+  final DateTime createdAt;
   VideoPlayList(
-      {required this.id, required this.videoId, required this.playListId});
+      {required this.id,
+      required this.videoId,
+      required this.playListId,
+      required this.createdAt});
   factory VideoPlayList.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
@@ -917,6 +921,8 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
           .mapFromDatabaseResponse(data['${effectivePrefix}video_id'])!,
       playListId: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}play_list_id'])!,
+      createdAt: const DateTimeType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}created_at'])!,
     );
   }
   @override
@@ -925,6 +931,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
     map['id'] = Variable<int>(id);
     map['video_id'] = Variable<String>(videoId);
     map['play_list_id'] = Variable<int>(playListId);
+    map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
@@ -933,6 +940,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
       id: Value(id),
       videoId: Value(videoId),
       playListId: Value(playListId),
+      createdAt: Value(createdAt),
     );
   }
 
@@ -943,6 +951,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
       id: serializer.fromJson<int>(json['id']),
       videoId: serializer.fromJson<String>(json['videoId']),
       playListId: serializer.fromJson<int>(json['playListId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
   @override
@@ -952,70 +961,84 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
       'id': serializer.toJson<int>(id),
       'videoId': serializer.toJson<String>(videoId),
       'playListId': serializer.toJson<int>(playListId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
-  VideoPlayList copyWith({int? id, String? videoId, int? playListId}) =>
+  VideoPlayList copyWith(
+          {int? id, String? videoId, int? playListId, DateTime? createdAt}) =>
       VideoPlayList(
         id: id ?? this.id,
         videoId: videoId ?? this.videoId,
         playListId: playListId ?? this.playListId,
+        createdAt: createdAt ?? this.createdAt,
       );
   @override
   String toString() {
     return (StringBuffer('VideoPlayList(')
           ..write('id: $id, ')
           ..write('videoId: $videoId, ')
-          ..write('playListId: $playListId')
+          ..write('playListId: $playListId, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(videoId.hashCode, playListId.hashCode)));
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(videoId.hashCode, $mrjc(playListId.hashCode, createdAt.hashCode))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is VideoPlayList &&
           other.id == this.id &&
           other.videoId == this.videoId &&
-          other.playListId == this.playListId);
+          other.playListId == this.playListId &&
+          other.createdAt == this.createdAt);
 }
 
 class VideosPlayListsCompanion extends UpdateCompanion<VideoPlayList> {
   final Value<int> id;
   final Value<String> videoId;
   final Value<int> playListId;
+  final Value<DateTime> createdAt;
   const VideosPlayListsCompanion({
     this.id = const Value.absent(),
     this.videoId = const Value.absent(),
     this.playListId = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   VideosPlayListsCompanion.insert({
     this.id = const Value.absent(),
     required String videoId,
     required int playListId,
+    this.createdAt = const Value.absent(),
   })  : videoId = Value(videoId),
         playListId = Value(playListId);
   static Insertable<VideoPlayList> custom({
     Expression<int>? id,
     Expression<String>? videoId,
     Expression<int>? playListId,
+    Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (videoId != null) 'video_id': videoId,
       if (playListId != null) 'play_list_id': playListId,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
   VideosPlayListsCompanion copyWith(
-      {Value<int>? id, Value<String>? videoId, Value<int>? playListId}) {
+      {Value<int>? id,
+      Value<String>? videoId,
+      Value<int>? playListId,
+      Value<DateTime>? createdAt}) {
     return VideosPlayListsCompanion(
       id: id ?? this.id,
       videoId: videoId ?? this.videoId,
       playListId: playListId ?? this.playListId,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -1031,6 +1054,9 @@ class VideosPlayListsCompanion extends UpdateCompanion<VideoPlayList> {
     if (playListId.present) {
       map['play_list_id'] = Variable<int>(playListId.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
     return map;
   }
 
@@ -1039,7 +1065,8 @@ class VideosPlayListsCompanion extends UpdateCompanion<VideoPlayList> {
     return (StringBuffer('VideosPlayListsCompanion(')
           ..write('id: $id, ')
           ..write('videoId: $videoId, ')
-          ..write('playListId: $playListId')
+          ..write('playListId: $playListId, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -1068,8 +1095,14 @@ class $VideosPlayListsTable extends VideosPlayLists
       typeName: 'INTEGER',
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL REFERENCES playlists (id)');
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  late final GeneratedColumn<DateTime?> createdAt = GeneratedColumn<DateTime?>(
+      'created_at', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
   @override
-  List<GeneratedColumn> get $columns => [id, videoId, playListId];
+  List<GeneratedColumn> get $columns => [id, videoId, playListId, createdAt];
   @override
   String get aliasedName => _alias ?? 'videos_play_lists';
   @override
@@ -1095,6 +1128,10 @@ class $VideosPlayListsTable extends VideosPlayLists
               data['play_list_id']!, _playListIdMeta));
     } else if (isInserting) {
       context.missing(_playListIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     }
     return context;
   }
