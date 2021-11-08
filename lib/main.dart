@@ -11,6 +11,7 @@ import 'package:zen_player/redux/reducers/app.dart';
 import 'package:zen_player/redux/states/app.dart';
 import 'package:zen_player/redux/store.dart';
 import 'package:zen_player/utils/config.dart';
+import 'package:zen_player/utils/route_observer.dart';
 import 'package:zen_player/utils/routes.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
               themeMode: vm.themeMode,
               routes: Routes.routesMap,
               debugShowCheckedModeBanner: false,
+              navigatorObservers: [appRouteObserver],
             );
           },
         ));
