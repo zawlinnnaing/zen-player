@@ -28,7 +28,7 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter pub get
-      - run: flutter test
+#      - run: flutter test
       - name: Download Android keystore
         id: android_keystore
         uses: timheuer/base64-to-file@v1.0.3
