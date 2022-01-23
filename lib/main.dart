@@ -5,6 +5,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:zen_player/managers/watch_history.dart';
+import 'package:zen_player/models/playlist.dart';
+import 'package:zen_player/modules/playlist/Playlist.dart';
 import 'package:zen_player/redux/middlewares/search_middleware.dart';
 import 'package:zen_player/redux/middlewares/theme_middleware.dart';
 import 'package:zen_player/redux/reducers/app.dart';
@@ -17,6 +19,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> beforeAppInitialized() async {
   await WatchHistoryManager.fromDefault().create();
+  PlayListModel.getInstance().findOrCreate({
+    "name": "Watch Later",
+    "isBuiltIn": true,
+  }).then((value) => {});
 }
 
 Future<void> afterAppInitialized() async {}
