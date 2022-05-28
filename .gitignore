@@ -49,3 +49,5 @@ app.*.map.json
 # env files
 *.env
 secrets
+
+**/lib/*.jar
