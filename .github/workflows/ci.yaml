@@ -1,25 +1,28 @@
 name: CI
 on:
-  pull_request:
-    types:
-      - synchronize
-      - opened
-    branches:
-      - *
+  pull_request
+
 jobs:
   test:
     runs-on: ubuntu-20.04
     steps:
+      - name: Install Sqlite
+        run: sudo apt update -y && sudo apt install -y libsqlite3-dev sqlite3
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: '12.x'
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Flutter action
         uses: subosito/flutter-action@v1.5.3
         with:
           channel: 'stable'
       - run: flutter pub get
         name: Install Dependencies
+      - name: Prepare Env
+        run: echo "GOOGLE_API_KEY=${{secrets.GOOGLE_API_KEY}}" > .env
       - run: flutter test
         name: Test flutter app
       - name: Clean flutter

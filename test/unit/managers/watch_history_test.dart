@@ -32,11 +32,10 @@ void main() {
               .getSingle())
           .data;
       print('sqlite version, ${sqliteVersion.toString()}');
-      print("Path variables: ${Platform.environment['PATH'].toString()}");
       await watchHistoryManager.create();
     });
     test("create", () async {
-      AppPlayList watchHistoryPlayList = await watchHistoryManager.create();
+      final AppPlayList watchHistoryPlayList = await watchHistoryManager.create();
       expect(
           watchHistoryPlayList.name, WatchHistoryManager.DEFAULT_PLAYLIST_NAME);
     });
@@ -44,7 +43,7 @@ void main() {
         () async {
       await watchHistoryManager.create();
       await watchHistoryManager.create();
-      List<AppPlayList> playlists = await playListModel
+      final List<AppPlayList> playlists = await playListModel
           .searchByName(WatchHistoryManager.DEFAULT_PLAYLIST_NAME);
       expect(playlists.length, 1);
     });
@@ -60,9 +59,9 @@ void main() {
       test("normal flow", () async {
         await videoModel.findOrCreate(mockVideo.toMap());
         await watchHistoryManager.addVideo(mockVideo);
-        AppPlayList watchHistory = await playListModel
+        final AppPlayList watchHistory = await playListModel
             .findByName(WatchHistoryManager.DEFAULT_PLAYLIST_NAME);
-        List<AppVideo> watchedVideos =
+        final List<AppVideo> watchedVideos =
             (await playListModel.findVideos(int.parse(watchHistory.id)))
                 .map((e) => e.appVideo)
                 .toList();
@@ -71,11 +70,11 @@ void main() {
       });
       test("over limit predefined videos", () async {
         const int OVER_LIMIT_COUNT = 4; // chosen arbitrarily
-        List<AppVideoInPlaylist> insertedVideos = [];
+        final List<AppVideoInPlaylist> insertedVideos = [];
         for (int i = 0;
             i < WatchHistoryManager.MAX_VIDEOS + OVER_LIMIT_COUNT;
             i++) {
-          AppVideo appVideo = AppVideo(
+          final AppVideo appVideo = AppVideo(
               title: "Mock video $i",
               id: "Mock-$i",
               url: "http://example.com/$i",
@@ -86,17 +85,17 @@ void main() {
           await watchHistoryManager.addVideo(appVideo);
           await Future.delayed(Duration(milliseconds: 100));
         }
-        AppPlayList watchHistory =
+        final AppPlayList watchHistory =
             await watchHistoryManager.getPlayListWithVideos();
-        List<AppVideoInPlaylist> watchHistoryVideos =
+        final List<AppVideoInPlaylist> watchHistoryVideos =
             watchHistory.videos.toList();
         insertedVideos.sort(
             (videoA, videoB) => videoA.createdAt.compareTo(videoB.createdAt));
-        List<AppVideoInPlaylist> videosToRemove =
+        final List<AppVideoInPlaylist> videosToRemove =
             insertedVideos.sublist(0, OVER_LIMIT_COUNT - 1);
-        List<String> idsOfVideosToRemove =
+        final List<String> idsOfVideosToRemove =
             videosToRemove.map((e) => e.appVideo.id).toList();
-        List<AppVideoInPlaylist> videosToRemoveInWatchHistory =
+        final List<AppVideoInPlaylist> videosToRemoveInWatchHistory =
             watchHistoryVideos
                 .where((element) =>
                     idsOfVideosToRemove.contains(element.appVideo.id))
@@ -107,20 +106,20 @@ void main() {
       test("adding two same videos", () async {
         await watchHistoryManager.addVideo(mockVideo);
         await watchHistoryManager.addVideo(mockVideo);
-        AppPlayList watchHistory =
+        final AppPlayList watchHistory =
             await watchHistoryManager.getPlayListWithVideos();
         expect(watchHistory.videos.length, 1);
       });
       test("adding two different videos but adding one video twice", () async {
         await watchHistoryManager.addVideo(mockVideo);
-        AppVideo newVideo = AppVideo(
+        final AppVideo newVideo = AppVideo(
             title: "New mock video",
             id: "new-mock",
             url: "https://new-mock.com",
             provider: AppVideoProvider.YouTube);
         await watchHistoryManager.addVideo(newVideo);
         await watchHistoryManager.addVideo(mockVideo);
-        AppPlayList watchHistory =
+        final AppPlayList watchHistory =
             await watchHistoryManager.getPlayListWithVideos();
         expect(watchHistory.videos.length, 2);
         expect(
