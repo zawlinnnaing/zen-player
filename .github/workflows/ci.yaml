@@ -19,6 +19,8 @@ jobs:
           channel: 'stable'
       - run: flutter pub get
         name: Install Dependencies
+      - name: Prepare Env
+        run: echo "GOOGLE_API_KEY=${{secrets.GOOGLE_API_KEY}}" > .env
       - run: flutter test
         name: Test flutter app
       - name: Clean flutter
