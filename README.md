@@ -34,7 +34,7 @@ flutter run --trace-systrace --no-sound-null-safety -d <EMULATOR-DEVICE-ID>
 - Tests
 
 ```shell
-flutter test
+flutter test --no-sound-null-safety
 ```
 
 You can checkout coding standard for this project [here](docs/coding_standard.md).
