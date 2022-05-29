@@ -9,7 +9,7 @@ class PlayListModel extends BaseModel implements Model<AppPlayList> {
   late final VideoModel _videoModel;
 
   PlayListModel({required this.database})
-      : this._videoModel = VideoModel(database: database),
+      : _videoModel = VideoModel(database: database),
         super(database);
 
   factory PlayListModel.getInstance() {
@@ -20,21 +20,20 @@ class PlayListModel extends BaseModel implements Model<AppPlayList> {
     int playListId,
     String videoId,
   ) async {
-    VideosPlayListsCompanion videosPlayListsCompanion =
+    final VideosPlayListsCompanion videosPlayListsCompanion =
         VideosPlayListsCompanion(
       playListId: Value(playListId),
       videoId: Value(videoId),
     );
-    await this._videoModel.findById(videoId);
-    await this
-        .database
+    await _videoModel.findById(videoId);
+    await database
         .into(database.videosPlayLists)
         .insert(videosPlayListsCompanion);
   }
 
   Future<bool> hasVideoInPlaylist(int playlistId, String videoId) async {
     try {
-      await (this.database.select(this.database.videosPlayLists)
+      await (database.select(database.videosPlayLists)
             ..where((tbl) =>
                 tbl.playListId.equals(playlistId) &
                 tbl.videoId.equals(videoId)))
@@ -44,19 +43,19 @@ class PlayListModel extends BaseModel implements Model<AppPlayList> {
       if (error is StateError) {
         return false;
       }
-      throw error;
+      rethrow;
     }
   }
 
   Future<List<AppVideoInPlaylist>> findVideos(int playlistId) async {
     final List<VideoPlayList> videosPlayList =
-        await (this.database.select(this.database.videosPlayLists)
+        await (database.select(database.videosPlayLists)
               ..where((tbl) => tbl.playListId.equals(playlistId)))
             .get();
     final List<String> videoIds = videosPlayList.map((e) => e.videoId).toList();
-    final List<AppVideo> videos = await this._videoModel.findByIds(videoIds);
+    final List<AppVideo> videos = await _videoModel.findByIds(videoIds);
     return videos.map((video) {
-      VideoPlayList videoPlayList =
+      final VideoPlayList videoPlayList =
           videosPlayList.firstWhere((element) => element.videoId == video.id);
       return AppVideoInPlaylist(
           appVideo: video, createdAt: videoPlayList.createdAt);
@@ -65,64 +64,65 @@ class PlayListModel extends BaseModel implements Model<AppPlayList> {
 
   @override
   Future<AppPlayList> findOrCreate(Map<String, dynamic> data) async {
-    PlayListsCompanion companion = PlayListsCompanion(
-      isBuiltIn: Value.ofNullable(data["isBuiltIn"]),
+    final PlayListsCompanion companion = PlayListsCompanion(
+      isBuiltIn: Value.ofNullable(data["isBuiltIn"] as bool),
       updatedAt: Value(DateTime.now()),
       createdAt: Value(DateTime.now()),
-      name: Value.ofNullable(data["name"]),
+      name: Value.ofNullable(data["name"] as String),
     );
     try {
-      PlayListData playListData =
-          await (this.database.select(this.database.playLists)
-                ..where((tbl) => tbl.name.equals(data["name"])))
+      final PlayListData playListData =
+          await (database.select(database.playLists)
+                ..where((tbl) => tbl.name.equals(data["name"] as String)))
               .getSingle();
       return AppPlayList.fromPlayListData(playListData);
     } catch (error) {
       if (error is StateError) {
-        PlayListData playListData = await this
-            .database
-            .into(this.database.playLists)
-            .insertReturning(companion);
+        final PlayListData playListData = await database
+            .insertReturning<PlayListData>(database.playLists, companion);
         return AppPlayList.fromPlayListData(playListData);
       }
-      throw error;
+      rethrow;
     }
   }
 
   PlayListsCompanion fromMap(Map<String, dynamic> data) {
     return PlayListsCompanion(
-      id: Value.ofNullable(data["id"] == null ? null : int.parse(data["id"])),
-      name: Value.ofNullable(data["name"]),
-      isBuiltIn: Value.ofNullable(data["isBuiltIn"]),
-      createdAt: Value.ofNullable(data["createdAt"] ?? DateTime.now()),
-      updatedAt: Value.ofNullable(data["updatedAt"] ?? DateTime.now()),
+      id: Value.ofNullable(
+          data["id"] == null ? null : int.parse(data["id"].toString())),
+      name: Value.ofNullable(data["name"] as String),
+      isBuiltIn: Value.ofNullable(data["isBuiltIn"] as bool),
+      createdAt:
+          Value.ofNullable(data["createdAt"] as DateTime ?? DateTime.now()),
+      updatedAt:
+          Value.ofNullable(data["updatedAt"] as DateTime ?? DateTime.now()),
     );
   }
 
   @override
   Future<AppPlayList> insert(Map<String, dynamic> data) async {
-    PlayListsCompanion playListsCompanion = this.fromMap(
+    final PlayListsCompanion playListsCompanion = fromMap(
       data,
     );
-    PlayListData createdData = await this
-        .database
-        .into(this.database.playLists)
-        .insertReturning(playListsCompanion);
+    final int rowId =
+        await database.into(database.playLists).insert(playListsCompanion);
+    final PlayListData createdData = await (database.select(database.playLists)
+          ..where((tbl) => tbl.rowId.equals(rowId)))
+        .getSingle();
     return AppPlayList.fromPlayListData(createdData);
   }
 
   @override
   Future<AppPlayList> findById(id) async {
-    PlayListData playListData =
-        await (this.database.select(this.database.playLists)
-              ..where((tbl) => tbl.id.equals(int.parse(id))))
-            .getSingle();
+    final PlayListData playListData = await (database.select(database.playLists)
+          ..where((tbl) => tbl.id.equals(int.parse(id.toString()))))
+        .getSingle();
     return AppPlayList.fromPlayListData(playListData);
   }
 
   Future<List<AppPlayList>> searchByName(String nameToSearch) async {
-    List<PlayListData> playListsFromDB =
-        await (this.database.select(this.database.playLists)
+    final List<PlayListData> playListsFromDB =
+        await (database.select(database.playLists)
               ..where((tbl) => tbl.name.contains(nameToSearch)))
             .get();
     return playListsFromDB
@@ -131,10 +131,9 @@ class PlayListModel extends BaseModel implements Model<AppPlayList> {
   }
 
   Future<AppPlayList> findByName(String name) async {
-    PlayListData playListData =
-        await (this.database.select(this.database.playLists)
-              ..where((tbl) => tbl.name.equals(name)))
-            .getSingle();
+    final PlayListData playListData = await (database.select(database.playLists)
+          ..where((tbl) => tbl.name.equals(name)))
+        .getSingle();
     return AppPlayList.fromPlayListData(playListData);
   }
 
@@ -159,7 +158,7 @@ class AppVideoInPlaylist {
 
   @override
   String toString() {
-    return "AppVideo: ${this.appVideo.toString()}, createdAt: ${this.createdAt.toString()}";
+    return "AppVideo: ${appVideo.toString()}, createdAt: ${createdAt.toString()}";
   }
 }
 
@@ -174,33 +173,33 @@ class AppPlayList {
       required this.name,
       Set<AppVideoInPlaylist>? videos,
       this.isBuiltIn = false})
-      : this._videos = videos ?? Set();
+      : _videos = videos ?? Set();
 
   factory AppPlayList.fromPlayListData(PlayListData data) {
     return AppPlayList(
         id: data.id.toString(), name: data.name, isBuiltIn: data.isBuiltIn);
   }
 
-  Set<AppVideoInPlaylist> get videos => this._videos;
+  Set<AppVideoInPlaylist> get videos => _videos;
 
   set videos(Set<AppVideoInPlaylist> videos) {
-    this._videos = videos;
+    _videos = videos;
   }
 
   addVideo(AppVideoInPlaylist video) {
-    this._videos.add(video);
+    _videos.add(video);
   }
 
   @override
   String toString() {
-    return "Id: ${this.id}, Name: ${this.name}, videos: ${this.videos.toString()}";
+    return "Id: ${id}, Name: ${name}, videos: ${videos.toString()}";
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "id": this.id,
-      "name": this.name,
-      "isBuiltIn": this.isBuiltIn,
+      "id": id,
+      "name": name,
+      "isBuiltIn": isBuiltIn,
     };
   }
 }

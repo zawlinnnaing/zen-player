@@ -45,7 +45,7 @@ dependencies:
   flutter_linkify: ^5.0.2
   url_launcher: ^6.0.10
   drift: ^1.0.0
-#  sqlite3_flutter_libs: ^0.5.7
+  sqlite3_flutter_libs: ^0.5.7
   path: ^1.8.0
   path_provider: ^2.0.7
 

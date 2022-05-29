@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:zen_player/modules/playlists/Playlists.dart';
 import 'package:zen_player/modules/vendors/video.dart';
 
 part 'database.g.dart';
@@ -122,6 +123,14 @@ class MyDatabase extends _$MyDatabase {
         }
       });
     }
+  }
+
+  Future<T> insertReturning<T>(TableInfo table, UpdateCompanion<T> data) async {
+    final int rowId = await into(table).insert(data);
+    final T createdData = await (select(table)
+          ..where((tbl) => (tbl as TableInfo).rowId.equals(rowId)))
+        .getSingle() as T;
+    return createdData;
   }
 
   /// For testing purpose only, don't use in code.

@@ -4,29 +4,32 @@ import 'package:zen_player/modules/vendors/video.dart';
 import 'package:drift/drift.dart';
 
 class VideoModel extends BaseModel implements Model<AppVideo> {
+  @override
   late final MyDatabase database;
+
   VideoModel({required this.database}) : super(database);
+
   factory VideoModel.getInstance() {
     return VideoModel(database: MyDatabase());
   }
+
+  @override
   Future<AppVideo> insert(Map<String, dynamic> data) async {
     data.addAll({"createdAt": DateTime.now()});
-    final VideosCompanion companion = this._fromMap(data);
-    VideoData createdData = await this
-        .database
-        .into(this.database.videos)
-        .insertReturning(companion);
-    return this._fromData(createdData);
+    final VideosCompanion companion = _fromMap(data);
+    final VideoData createdData =
+        await database.insertReturning<VideoData>(database.videos, companion);
+    return _fromData(createdData);
   }
 
   @override
   Future<AppVideo> findOrCreate(Map<String, dynamic> data) async {
     try {
-      AppVideo video = await this.findById(data['id']);
+      final AppVideo video = await findById(data['id']);
       return video;
     } catch (error) {
       if (error is StateError) {
-        AppVideo video = await this.insert(data);
+        final AppVideo video = await insert(data);
         return video;
       }
       throw error;
@@ -44,15 +47,15 @@ class VideoModel extends BaseModel implements Model<AppVideo> {
             ? Value.absent()
             : Value(data["provider"].toString()),
         width: data["width"] == null ? Value.absent() : Value(data["width"]),
-        height: this.getCompanionValue("height", data["height"]),
-        thumbnailUrl: this.getCompanionValue("thumbnail", data["thumbnail"]),
-        publishedAt: this.getCompanionValue("publishedAt", data["publishedAt"]),
-        uploader: this.getCompanionValue("uploader", data["uploader"]),
-        description: this.getCompanionValue("description", data["description"]),
+        height: getCompanionValue("height", data["height"]),
+        thumbnailUrl: getCompanionValue("thumbnail", data["thumbnail"]),
+        publishedAt: getCompanionValue("publishedAt", data["publishedAt"]),
+        uploader: getCompanionValue("uploader", data["uploader"]),
+        description: getCompanionValue("description", data["description"]),
         publishedAtStr:
-            this.getCompanionValue("publishedAtStr", data["publishedAtStr"]),
-        title: this.getCompanionValue("title", data["title"]),
-        url: this.getCompanionValue("url", data["url"]));
+            getCompanionValue("publishedAtStr", data["publishedAtStr"]),
+        title: getCompanionValue("title", data["title"]),
+        url: getCompanionValue("url", data["url"]));
   }
 
   VideosCompanion _fromAppVideo(AppVideo video) {
@@ -89,7 +92,7 @@ class VideoModel extends BaseModel implements Model<AppVideo> {
 
   @override
   Future<AppVideo> findById(id) async {
-    VideoData videoData = await (this.database.select(this.database.videos)
+    final VideoData videoData = await (database.select(database.videos)
           ..where((t) => t.id.equals(id)))
         .getSingle();
     return _fromData(videoData);
@@ -97,35 +100,34 @@ class VideoModel extends BaseModel implements Model<AppVideo> {
 
   @override
   Future<AppVideo> updateById(id, AppVideo videoToUpdate) async {
-    Map<String, dynamic> videoToUpdateMap = videoToUpdate.toMap();
+    final Map<String, dynamic> videoToUpdateMap = videoToUpdate.toMap();
     videoToUpdateMap.update("id", (value) => id.toString());
-    VideosCompanion updateCompanion = this._fromMap(videoToUpdateMap);
-    await (this.database.update(this.database.videos)
+    final VideosCompanion updateCompanion = _fromMap(videoToUpdateMap);
+    await (database.update(database.videos)
           ..where((tbl) => tbl.id.equals(id.toString())))
         .write(updateCompanion);
-    AppVideo video = await this.findById(id);
+    final AppVideo video = await findById(id);
     return video;
   }
 
   Future<List<AppVideo>> findByIds(List<String> ids) async {
-    List<VideoData> videosData =
-        await (this.database.select(this.database.videos)
-              ..where((tbl) => tbl.id.isIn(ids)))
-            .get();
+    final List<VideoData> videosData = await (database.select(database.videos)
+          ..where((tbl) => tbl.id.isIn(ids)))
+        .get();
     return videosData
-        .map((VideoData videoData) => this._fromData(videoData))
+        .map((VideoData videoData) => _fromData(videoData))
         .toList();
   }
 
   @override
   Future<void> removeById(id) async {
-    await (this.database.delete(this.database.videos)
+    await (database.delete(database.videos)
           ..where((tbl) => tbl.id.equals(id.toString())))
         .go();
   }
 
   Future<void> batchRemove(List<String> idsToRemove) async {
-    await (this.database.delete(this.database.videos)
+    await (database.delete(database.videos)
           ..where((tbl) => tbl.id.isIn(idsToRemove)))
         .go();
   }
