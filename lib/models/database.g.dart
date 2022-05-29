@@ -6,7 +6,7 @@ part of 'database.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+// ignore_for_file: type=lint
 class VideoData extends DataClass implements Insertable<VideoData> {
   final String id;
   final String title;
@@ -35,8 +35,7 @@ class VideoData extends DataClass implements Insertable<VideoData> {
       this.height,
       required this.createdAt,
       required this.updatedAt});
-  factory VideoData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory VideoData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return VideoData(
       id: const StringType()
@@ -132,7 +131,7 @@ class VideoData extends DataClass implements Insertable<VideoData> {
 
   factory VideoData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return VideoData(
       id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
@@ -151,7 +150,7 @@ class VideoData extends DataClass implements Insertable<VideoData> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'title': serializer.toJson<String>(title),
@@ -219,32 +218,20 @@ class VideoData extends DataClass implements Insertable<VideoData> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          title.hashCode,
-          $mrjc(
-              url.hashCode,
-              $mrjc(
-                  description.hashCode,
-                  $mrjc(
-                      publishedAtStr.hashCode,
-                      $mrjc(
-                          publishedAt.hashCode,
-                          $mrjc(
-                              thumbnailUrl.hashCode,
-                              $mrjc(
-                                  uploader.hashCode,
-                                  $mrjc(
-                                      provider.hashCode,
-                                      $mrjc(
-                                          width.hashCode,
-                                          $mrjc(
-                                              height.hashCode,
-                                              $mrjc(
-                                                  createdAt.hashCode,
-                                                  updatedAt
-                                                      .hashCode)))))))))))));
+  int get hashCode => Object.hash(
+      id,
+      title,
+      url,
+      description,
+      publishedAtStr,
+      publishedAt,
+      thumbnailUrl,
+      uploader,
+      provider,
+      width,
+      height,
+      createdAt,
+      updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -440,69 +427,83 @@ class VideosCompanion extends UpdateCompanion<VideoData> {
 }
 
 class $VideosTable extends Videos with TableInfo<$VideosTable, VideoData> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $VideosTable(this._db, [this._alias]);
+  $VideosTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<String?> id = GeneratedColumn<String?>(
       'id', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
   late final GeneratedColumn<String?> title = GeneratedColumn<String?>(
       'title', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _urlMeta = const VerificationMeta('url');
+  @override
   late final GeneratedColumn<String?> url = GeneratedColumn<String?>(
       'url', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
+  @override
   late final GeneratedColumn<String?> description = GeneratedColumn<String?>(
       'description', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _publishedAtStrMeta =
       const VerificationMeta('publishedAtStr');
+  @override
   late final GeneratedColumn<String?> publishedAtStr = GeneratedColumn<String?>(
       'published_at_str', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _publishedAtMeta =
       const VerificationMeta('publishedAt');
+  @override
   late final GeneratedColumn<DateTime?> publishedAt =
       GeneratedColumn<DateTime?>('published_at', aliasedName, true,
-          typeName: 'INTEGER', requiredDuringInsert: false);
+          type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _thumbnailUrlMeta =
       const VerificationMeta('thumbnailUrl');
+  @override
   late final GeneratedColumn<String?> thumbnailUrl = GeneratedColumn<String?>(
       'thumbnail_url', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _uploaderMeta = const VerificationMeta('uploader');
+  @override
   late final GeneratedColumn<String?> uploader = GeneratedColumn<String?>(
       'uploader', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _providerMeta = const VerificationMeta('provider');
+  @override
   late final GeneratedColumn<String?> provider = GeneratedColumn<String?>(
       'provider', aliasedName, false,
-      typeName: 'TEXT',
+      type: const StringType(),
       requiredDuringInsert: false,
       defaultValue: Constant(AppVideoProvider.YouTube.toString()));
   final VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
   late final GeneratedColumn<double?> width = GeneratedColumn<double?>(
       'width', aliasedName, true,
-      typeName: 'REAL', requiredDuringInsert: false);
+      type: const RealType(), requiredDuringInsert: false);
   final VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
   late final GeneratedColumn<double?> height = GeneratedColumn<double?>(
       'height', aliasedName, true,
-      typeName: 'REAL', requiredDuringInsert: false);
+      type: const RealType(), requiredDuringInsert: false);
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  @override
   late final GeneratedColumn<DateTime?> createdAt = GeneratedColumn<DateTime?>(
       'created_at', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now());
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  @override
   late final GeneratedColumn<DateTime?> updatedAt = GeneratedColumn<DateTime?>(
       'updated_at', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now());
   @override
@@ -602,13 +603,13 @@ class $VideosTable extends Videos with TableInfo<$VideosTable, VideoData> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   VideoData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return VideoData.fromData(data, _db,
+    return VideoData.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $VideosTable createAlias(String alias) {
-    return $VideosTable(_db, alias);
+    return $VideosTable(attachedDatabase, alias);
   }
 }
 
@@ -624,8 +625,7 @@ class PlayListData extends DataClass implements Insertable<PlayListData> {
       required this.isBuiltIn,
       required this.createdAt,
       required this.updatedAt});
-  factory PlayListData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory PlayListData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return PlayListData(
       id: const IntType()
@@ -663,7 +663,7 @@ class PlayListData extends DataClass implements Insertable<PlayListData> {
 
   factory PlayListData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return PlayListData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
@@ -674,7 +674,7 @@ class PlayListData extends DataClass implements Insertable<PlayListData> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
@@ -710,12 +710,7 @@ class PlayListData extends DataClass implements Insertable<PlayListData> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          name.hashCode,
-          $mrjc(isBuiltIn.hashCode,
-              $mrjc(createdAt.hashCode, updatedAt.hashCode)))));
+  int get hashCode => Object.hash(id, name, isBuiltIn, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -814,38 +809,44 @@ class PlayListsCompanion extends UpdateCompanion<PlayListData> {
 
 class $PlayListsTable extends PlayLists
     with TableInfo<$PlayListsTable, PlayListData> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $PlayListsTable(this._db, [this._alias]);
+  $PlayListsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
       'name', aliasedName, false,
-      typeName: 'TEXT',
+      type: const StringType(),
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL UNIQUE');
   final VerificationMeta _isBuiltInMeta = const VerificationMeta('isBuiltIn');
+  @override
   late final GeneratedColumn<bool?> isBuiltIn = GeneratedColumn<bool?>(
       'is_built_in', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const BoolType(),
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (is_built_in IN (0, 1))',
       defaultValue: Constant(false));
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  @override
   late final GeneratedColumn<DateTime?> createdAt = GeneratedColumn<DateTime?>(
       'created_at', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now());
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  @override
   late final GeneratedColumn<DateTime?> updatedAt = GeneratedColumn<DateTime?>(
       'updated_at', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now());
   @override
@@ -890,13 +891,13 @@ class $PlayListsTable extends PlayLists
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   PlayListData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return PlayListData.fromData(data, _db,
+    return PlayListData.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $PlayListsTable createAlias(String alias) {
-    return $PlayListsTable(_db, alias);
+    return $PlayListsTable(attachedDatabase, alias);
   }
 }
 
@@ -910,9 +911,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
       required this.videoId,
       required this.playListId,
       required this.createdAt});
-  factory VideoPlayList.fromData(
-      Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory VideoPlayList.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return VideoPlayList(
       id: const IntType()
@@ -946,7 +945,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
 
   factory VideoPlayList.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return VideoPlayList(
       id: serializer.fromJson<int>(json['id']),
       videoId: serializer.fromJson<String>(json['videoId']),
@@ -956,7 +955,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'videoId': serializer.toJson<String>(videoId),
@@ -985,8 +984,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(videoId.hashCode, $mrjc(playListId.hashCode, createdAt.hashCode))));
+  int get hashCode => Object.hash(id, videoId, playListId, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1074,31 +1072,36 @@ class VideosPlayListsCompanion extends UpdateCompanion<VideoPlayList> {
 
 class $VideosPlayListsTable extends VideosPlayLists
     with TableInfo<$VideosPlayListsTable, VideoPlayList> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $VideosPlayListsTable(this._db, [this._alias]);
+  $VideosPlayListsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _videoIdMeta = const VerificationMeta('videoId');
+  @override
   late final GeneratedColumn<String?> videoId = GeneratedColumn<String?>(
       'video_id', aliasedName, false,
-      typeName: 'TEXT',
+      type: const StringType(),
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL REFERENCES videos (id)');
   final VerificationMeta _playListIdMeta = const VerificationMeta('playListId');
+  @override
   late final GeneratedColumn<int?> playListId = GeneratedColumn<int?>(
       'play_list_id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL REFERENCES playlists (id)');
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  @override
   late final GeneratedColumn<DateTime?> createdAt = GeneratedColumn<DateTime?>(
       'created_at', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now());
   @override
@@ -1140,13 +1143,13 @@ class $VideosPlayListsTable extends VideosPlayLists
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   VideoPlayList map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return VideoPlayList.fromData(data, _db,
+    return VideoPlayList.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $VideosPlayListsTable createAlias(String alias) {
-    return $VideosPlayListsTable(_db, alias);
+    return $VideosPlayListsTable(attachedDatabase, alias);
   }
 }
 
