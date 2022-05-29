@@ -6,6 +6,8 @@ jobs:
   test:
     runs-on: ubuntu-20.04
     steps:
+      - name: Install Sqlite
+        run: sudo apt update -y && sudo apt install -y libsqlite3-dev sqlite3
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
