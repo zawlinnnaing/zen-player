@@ -198,14 +198,14 @@ packages:
     source: hosted
     version: "4.0.6"
   drift:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: drift
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.0"
   drift_dev:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: drift_dev
       url: "https://pub.dartlang.org"
@@ -409,6 +409,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
+  lint:
+    dependency: "direct dev"
+    description:
+      name: lint
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.8.2"
   logging:
     dependency: transitive
     description:
@@ -444,20 +451,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
-  moor:
-    dependency: "direct main"
-    description:
-      name: moor
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.6.1+1"
-  moor_generator:
-    dependency: "direct dev"
-    description:
-      name: moor_generator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.6.0+1"
   package_config:
     dependency: transitive
     description:
@@ -694,13 +687,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.1"
-  sqlite3_flutter_libs:
-    dependency: "direct main"
-    description:
-      name: sqlite3_flutter_libs
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.7"
   sqlparser:
     dependency: transitive
     description:

@@ -6,7 +6,7 @@ part of 'database.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+// ignore_for_file: type=lint
 class VideoData extends DataClass implements Insertable<VideoData> {
   final String id;
   final String title;
@@ -35,8 +35,7 @@ class VideoData extends DataClass implements Insertable<VideoData> {
       this.height,
       required this.createdAt,
       required this.updatedAt});
-  factory VideoData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory VideoData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return VideoData(
       id: const StringType()
@@ -132,7 +131,7 @@ class VideoData extends DataClass implements Insertable<VideoData> {
 
   factory VideoData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return VideoData(
       id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
@@ -151,7 +150,7 @@ class VideoData extends DataClass implements Insertable<VideoData> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'title': serializer.toJson<String>(title),
@@ -604,7 +603,7 @@ class $VideosTable extends Videos with TableInfo<$VideosTable, VideoData> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   VideoData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return VideoData.fromData(data, attachedDatabase,
+    return VideoData.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
@@ -626,8 +625,7 @@ class PlayListData extends DataClass implements Insertable<PlayListData> {
       required this.isBuiltIn,
       required this.createdAt,
       required this.updatedAt});
-  factory PlayListData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory PlayListData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return PlayListData(
       id: const IntType()
@@ -665,7 +663,7 @@ class PlayListData extends DataClass implements Insertable<PlayListData> {
 
   factory PlayListData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return PlayListData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
@@ -676,7 +674,7 @@ class PlayListData extends DataClass implements Insertable<PlayListData> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
@@ -893,7 +891,7 @@ class $PlayListsTable extends PlayLists
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   PlayListData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return PlayListData.fromData(data, attachedDatabase,
+    return PlayListData.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
@@ -913,9 +911,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
       required this.videoId,
       required this.playListId,
       required this.createdAt});
-  factory VideoPlayList.fromData(
-      Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory VideoPlayList.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return VideoPlayList(
       id: const IntType()
@@ -949,7 +945,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
 
   factory VideoPlayList.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return VideoPlayList(
       id: serializer.fromJson<int>(json['id']),
       videoId: serializer.fromJson<String>(json['videoId']),
@@ -959,7 +955,7 @@ class VideoPlayList extends DataClass implements Insertable<VideoPlayList> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'videoId': serializer.toJson<String>(videoId),
@@ -1147,7 +1143,7 @@ class $VideosPlayListsTable extends VideosPlayLists
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   VideoPlayList map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return VideoPlayList.fromData(data, attachedDatabase,
+    return VideoPlayList.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 

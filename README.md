@@ -1,5 +1,7 @@
 # Zen Player
 
+[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+
 Zen Player is a distraction-free player for streaming youtube and others.
 (Currently only supports **youtube**). It is currently available in **android**.
 

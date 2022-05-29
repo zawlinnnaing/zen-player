@@ -1,1 +1,6 @@
-import 'package:flutter/material.dart';class UpdateThemeModeAction {  ThemeMode themeMode;  UpdateThemeModeAction({required this.themeMode});}
+import 'package:flutter/material.dart';
+
+class UpdateThemeModeAction {
+  ThemeMode themeMode;
+  UpdateThemeModeAction({required this.themeMode});
+}
